@@ -12,7 +12,7 @@ drives = [chr(x) + ':' for x in range(65, 90) if os.path.exists(chr(x) + ':')]
 def listDirectories():
     listdir = os.listdir(os.getcwd())
     for x in listdir:
-        print(x)
+        print(x + '  ' + str(os.path.getsize(x)) + ' bytes')
 
 
 while True:
@@ -50,9 +50,12 @@ while True:
                 os.chdir(os.path.expandvars(path))
                 break
 
-            elif inp in drives:
-                os.chdir(inp + '\\')
-                break
+            elif inp > '5':
+                os.chdir(int(inp) - 5 + '\\')
+
+            # elif inp in drives:
+            #    os.chdir(inp + '\\')
+            #    break
 
             else:
                 print('Error\nEnter a correct input / drive name.\n')
