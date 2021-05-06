@@ -50,8 +50,9 @@ while True:
                 os.chdir(os.path.expandvars(path))
                 break
 
-            elif inp > '5':
-                os.chdir(int(inp) - 5 + '\\')
+            elif int(inp) > 4:
+                os.chdir(str(drives[int(inp) - 5]) + '\\')
+                break
 
             # elif inp in drives:
             #    os.chdir(inp + '\\')
