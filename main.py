@@ -15,6 +15,10 @@ def listDirectories():
         print(x + '  ' + str(os.path.getsize(x)) + ' bytes')
 
 
+def dirSize():
+    dirlist = os.listdir(os.getcwd())
+    dirlist.sort()
+
 while True:
     print("1.Open files/folders \n2.Rename \n3.Move and Paste \n4.Copy and Paste \n")
     result = input("Choose one of the following: ")
@@ -65,8 +69,10 @@ while True:
 
             listDirectories()
 
-            print('\n\nType "exit" to exit from file manager.')
+            print('\n\nType "sort" to sort list by largest file.')
+            print('Type "exit" to exit from file manager.')
             print('Type "back" to go up one directory.')
+
             res = input('\nChoose a file/folder: ')
             print('\n')
 
@@ -81,6 +87,12 @@ while True:
 
             elif res == 'back':  # Back command to go up one directory
                 os.chdir('..')
+
+            elif res == 'sort':
+                # dirSize()
+                dirlist = os.listdir(os.getcwd())
+                print(os.stat(dirlist[1]).st_size)
+                dirlist.sort(key=lambda f: os.stat(f).st_size, reverse=True)
 
             else:
                 print('No file/folder exist of this name.')
