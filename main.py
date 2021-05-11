@@ -1,11 +1,8 @@
 import sys
 import os
 import shutil
-
-print('Welwcome to the Python File Viewer\n')
-
-# Stores every drive connected on PC in a list.
-drives = [chr(x) + ':' for x in range(65, 90) if os.path.exists(chr(x) + ':')]
+import tkinter as tk
+from tkinter import *
 
 
 # Lists each folder and file present in the current working directory
@@ -15,9 +12,52 @@ def listDirectories():
         print(x + '  ' + str(os.path.getsize(x)) + ' bytes')
 
 
-def dirSize():
+def listDir():
+    txt_edit.delete('1.0', END)
+    os.chdir("E:\\")
+    listdir = os.listdir(os.getcwd())
+    for x in listdir:
+        txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
+
+
+def sortList():
+    txt_edit.delete('1.0', END)
+    os.chdir("E:\\")
     dirlist = os.listdir(os.getcwd())
-    dirlist.sort()
+    dirlist.sort(key=lambda f: os.stat(f).st_size, reverse=True)
+    for x in dirlist:
+        txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
+
+
+print('Welcome to the Python File Viewer\n')
+
+# Stores every drive connected on PC in a list.
+drives = [chr(x) + ':' for x in range(65, 90) if os.path.exists(chr(x) + ':')]
+
+#Set-up the window
+window = tk.Tk()
+window.title("File Manager")
+window.resizable(width=True, height=True)
+
+window.rowconfigure(0, minsize=500, weight=1)
+window.columnconfigure(1, minsize=500, weight=1)
+
+txt_edit = tk.Text(window)
+fr_buttons = tk.Frame(window)
+scr = Scrollbar(window, orient=VERTICAL, command=txt_edit.yview)
+btn_open = tk.Button(fr_buttons, text="Refresh", command=listDir)
+btn_save = tk.Button(fr_buttons, text="Sort", command=sortList)
+
+btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+btn_save.grid(row=1, column=0, sticky="ew", padx=5)
+
+fr_buttons.grid(row=0, column=0, sticky="ns")
+txt_edit.grid(row=0, column=1, sticky="nsew")
+
+txt_edit.config(yscrollcommand=scr.set)
+
+tk.mainloop()
+
 
 while True:
     showDir = True
@@ -92,7 +132,6 @@ while True:
                 showDir = True
 
             elif res == 'sort':
-                # dirSize()
                 dirlist = os.listdir(os.getcwd())
                 dirlist.sort(key=lambda f: os.stat(f).st_size, reverse=True)
                 for x in dirlist:
@@ -102,276 +141,277 @@ while True:
             else:
                 print('No file/folder exist of this name.')
 
-    if result == '2':
-        print("You chose to rename")
-        print('Drives: ')
-        for x in range(len(drives)):
-            print(str(1 + x) + '. ' + drives[x])
+    # if result == '2':
+    #     print("You chose to rename")
+    #     print('Drives: ')
+    #     for x in range(len(drives)):
+    #         print(str(1 + x) + '. ' + drives[x])
+    #
+    #     while True:
+    #         inp = input("\nEnter your Choice: ")
+    #
+    #         if inp in drives:
+    #             os.chdir(inp + '\\')
+    #             break
+    #         else:
+    #             print('Error\nEnter a correct drive name.\n')
+    #
+    #     while True:
+    #
+    #         listDirectories()
+    #
+    #         print('\n\nType "exit" to exit from file manager.')
+    #         print('Type "back" to go up one directory.')
+    #         print('Type "rename" to rename this directory')
+    #
+    #         res = input('\nChoose a file to rename: ')
+    #         print('\n')
+    #
+    #         if res in os.listdir(os.getcwd()):
+    #             if os.path.isfile(res):
+    #
+    #                 new_name = input("Enter a new name: ")
+    #                 ogDir = res
+    #                 newDir = os.getcwd() + '\\' + new_name
+    #                 shutil.move(ogDir, newDir)
+    #             else:
+    #                 os.chdir(res)
+    #
+    #         elif res == 'exit':  # Exit command to exit from loop
+    #             sys.exit(0)
+    #
+    #         elif res == 'back':  # Back command to go up one directory
+    #             os.chdir('..')
+    #
+    #         elif res == 'rename':  # Rename command to delete one directory
+    #
+    #             new_name = input("Enter a new name: ")
+    #             ogDir = os.getcwd()
+    #             os.chdir('..')
+    #             newDir = os.getcwd() + '\\' + new_name
+    #             shutil.move(ogDir, newDir)
+    #
+    #         else:
+    #             print('No file/folder exist of this name.')
+
+    # if result == '3':
+    #     print("You chose to move")
+    #     print('Drives: ')
+    #     for x in range(len(drives)):
+    #         print(str(1 + x) + '. ' + drives[x])
+    #
+    #     while True:
+    #         inp = input("\nEnter your Choice: ")
+    #
+    #         if inp in drives:
+    #             os.chdir(inp + '\\')
+    #             break
+    #         else:
+    #             print('Error\nEnter a correct drive name.\n')
+    #
+    #     while True:
+    #
+    #         listDirectories()
+    #
+    #         print('\n\nType "exit" to exit from file manager.')
+    #         print('Type "back" to go up one directory.')
+    #         print('Type "cut" to move this directory')
+    #
+    #         res = input('\nChoose a file to move: ')
+    #         print('\n')
+    #
+    #         if res in os.listdir(os.getcwd()):
+    #
+    #             if os.path.isfile(res):
+    #                 og_path = os.getcwd() + "\\" + res
+    #                 print("\nMove " + res + " to a desired location.")
+    #
+    #                 while True:
+    #                     for x in range(len(drives)):
+    #                         print(str(1 + x) + '. ' + drives[x])
+    #
+    #                     inp2 = input("\nEnter your Choice: ")
+    #
+    #                     if inp2 in drives:
+    #                         os.chdir(inp2 + '\\')
+    #                         break
+    #                     else:
+    #                         print('Error\nEnter a correct drive name.\n')
+    #
+    #                 while True:
+    #                     listDirectories()
+    #
+    #                     print('Type "pasteManager" to paste this file in current directory')
+    #
+    #                     res2 = input('\nChoose a file to move: ')
+    #                     print('\n')
+    #
+    #                     if res2 in os.listdir(os.getcwd()):
+    #                         if os.path.isfile(res):
+    #                             print("You can't choose a file.\nPlease choose a folder.")
+    #                         else:
+    #                             os.chdir(res2)
+    #
+    #                     elif res2 == 'pasteManager':
+    #                         shutil.move(og_path, os.getcwd())
+    #                         break
+    #
+    #             else:
+    #                 os.chdir(res)
+    #
+    #
+    #         elif res == 'exit':  # Exit command to exit from loop
+    #             sys.exit(0)
+    #
+    #         elif res == 'back':  # Back command to go up one directory
+    #             os.chdir('..')
+    #
+    #         elif res == 'cut':
+    #             og_path = os.getcwd()
+    #
+    #             print("Moving the current directory")
+    #             while True:
+    #                 for x in range(len(drives)):
+    #                     print(str(1 + x) + '. ' + drives[x])
+    #
+    #                 inp2 = input("\nEnter your Choice: ")
+    #
+    #                 if inp2 in drives:
+    #                     os.chdir(inp2 + '\\')
+    #                     break
+    #                 else:
+    #                     print('Error\nEnter a correct drive name.\n')
+    #
+    #             while True:
+    #                 listDirectories()
+    #
+    #                 print('\nType "paste" to paste this folder in current directory')
+    #
+    #                 res2 = input('\nChoose a folder to open: ')
+    #                 print('\n')
+    #
+    #                 if res2 in os.listdir(os.getcwd()):
+    #                     if os.path.isfile(res):
+    #                         print("You can't choose a file.\nPlease choose a folder.")
+    #                     else:
+    #                         os.chdir(res2)
+    #
+    #                 elif res2 == 'paste':
+    #                     shutil.move(og_path, os.getcwd())
+    #                     break
+    #
+    #         else:
+    #             print('No file/folder exist of this name.')
+
+    # if result == '4':
+    #     print("You chose to copy")
+    #     print('Drives: ')
+    #     for x in range(len(drives)):
+    #         print(str(1 + x) + '. ' + drives[x])
+    #
+    #     while True:
+    #         inp = input("\nEnter your Choice: ")
+    #
+    #         if inp in drives:
+    #             os.chdir(inp + '\\')
+    #             break
+    #         else:
+    #             print('Error\nEnter a correct drive name.\n')
+    #
+    #     while True:
+    #
+    #         listDirectories()
+    #
+    #         print('\n\nType "exit" to exit from file manager.')
+    #         print('Type "back" to go up one directory.')
+    #         print('Type "copy" to copy this directory')
+    #
+    #         res = input('\nChoose a file to copy: ')
+    #         print('\n')
+    #
+    #         if res in os.listdir(os.getcwd()):
+    #
+    #             if os.path.isfile(res):
+    #                 og_path = os.getcwd() + "\\" + res
+    #                 print("Move " + res + " to a desired location.")
+    #
+    #                 while True:
+    #                     for x in range(len(drives)):
+    #                         print(str(1 + x) + '. ' + drives[x])
+    #
+    #                     inp2 = input("\nEnter your Choice: ")
+    #
+    #                     if inp2 in drives:
+    #                         os.chdir(inp2 + '\\')
+    #                         break
+    #                     else:
+    #                         print('Error\nEnter a correct drive name.\n')
+    #
+    #                 while True:
+    #                     listDirectories()
+    #
+    #                     print('Type "paste" to copy this file in current directory')
+    #
+    #                     res2 = input('\nChoose a file to move: ')
+    #                     print('\n')
+    #
+    #                     if res2 in os.listdir(os.getcwd()):
+    #                         if os.path.isfile(res):
+    #                             print("You can't choose a file.\nPlease choose a folder.")
+    #                         else:
+    #                             os.chdir(res2)
+    #
+    #                     elif res2 == 'paste':
+    #                         shutil.copy(og_path, os.getcwd())
+    #                         break
+    #
+    #             else:
+    #                 os.chdir(res)
+    #
+    #
+    #         elif res == 'exit':  # Exit command to exit from loop
+    #             sys.exit(0)
+    #
+    #         elif res == 'back':  # Back command to go up one directory
+    #             os.chdir('..')
+    #
+    #         elif res == 'copy':
+    #             og_path = os.getcwd()
+    #
+    #             print("Copying the current directory")
+    #             while True:
+    #                 for x in range(len(drives)):
+    #                     print(str(1 + x) + '. ' + drives[x])
+    #
+    #                 inp2 = input("\nEnter your Choice: ")
+    #
+    #                 if inp2 in drives:
+    #                     os.chdir(inp2 + '\\')
+    #                     break
+    #                 else:
+    #                     print('Error\nEnter a correct drive name.\n')
+    #
+    #             while True:
+    #                 listDirectories()
+    #
+    #                 print('\nType "paste" to copy this file in current directory')
+    #
+    #                 res2 = input('\nChoose a folder to open: ')
+    #                 print('\n')
+    #
+    #                 if res2 in os.listdir(os.getcwd()):
+    #                     if os.path.isfile(res):
+    #                         print("You can't choose a file.\nPlease choose a folder.")
+    #                     else:
+    #                         os.chdir(res2)
+    #
+    #                 elif res2 == 'paste':
+    #                     print(og_path)
+    #                     folder_name = og_path.split('\\')[-1]
+    #                     folder_directory = os.getcwd() + '\\' + folder_name
+    #                     shutil.copytree(og_path, folder_directory)
+    #                     break
+    #
+    #         else:
+    #             print('No file/folder exist of this name.')
 
-        while True:
-            inp = input("\nEnter your Choice: ")
-
-            if inp in drives:
-                os.chdir(inp + '\\')
-                break
-            else:
-                print('Error\nEnter a correct drive name.\n')
-
-        while True:
-
-            listDirectories()
-
-            print('\n\nType "exit" to exit from file manager.')
-            print('Type "back" to go up one directory.')
-            print('Type "rename" to rename this directory')
-
-            res = input('\nChoose a file to rename: ')
-            print('\n')
-
-            if res in os.listdir(os.getcwd()):
-                if os.path.isfile(res):
-
-                    new_name = input("Enter a new name: ")
-                    ogDir = res
-                    newDir = os.getcwd() + '\\' + new_name
-                    shutil.move(ogDir, newDir)
-                else:
-                    os.chdir(res)
-
-            elif res == 'exit':  # Exit command to exit from loop
-                sys.exit(0)
-
-            elif res == 'back':  # Back command to go up one directory
-                os.chdir('..')
-
-            elif res == 'rename':  # Rename command to delete one directory
-
-                new_name = input("Enter a new name: ")
-                ogDir = os.getcwd()
-                os.chdir('..')
-                newDir = os.getcwd() + '\\' + new_name
-                shutil.move(ogDir, newDir)
-
-            else:
-                print('No file/folder exist of this name.')
-
-    if result == '3':
-        print("You chose to move")
-        print('Drives: ')
-        for x in range(len(drives)):
-            print(str(1 + x) + '. ' + drives[x])
-
-        while True:
-            inp = input("\nEnter your Choice: ")
-
-            if inp in drives:
-                os.chdir(inp + '\\')
-                break
-            else:
-                print('Error\nEnter a correct drive name.\n')
-
-        while True:
-
-            listDirectories()
-
-            print('\n\nType "exit" to exit from file manager.')
-            print('Type "back" to go up one directory.')
-            print('Type "cut" to move this directory')
-
-            res = input('\nChoose a file to move: ')
-            print('\n')
-
-            if res in os.listdir(os.getcwd()):
-
-                if os.path.isfile(res):
-                    og_path = os.getcwd() + "\\" + res
-                    print("\nMove " + res + " to a desired location.")
-
-                    while True:
-                        for x in range(len(drives)):
-                            print(str(1 + x) + '. ' + drives[x])
-
-                        inp2 = input("\nEnter your Choice: ")
-
-                        if inp2 in drives:
-                            os.chdir(inp2 + '\\')
-                            break
-                        else:
-                            print('Error\nEnter a correct drive name.\n')
-
-                    while True:
-                        listDirectories()
-
-                        print('Type "pasteManager" to paste this file in current directory')
-
-                        res2 = input('\nChoose a file to move: ')
-                        print('\n')
-
-                        if res2 in os.listdir(os.getcwd()):
-                            if os.path.isfile(res):
-                                print("You can't choose a file.\nPlease choose a folder.")
-                            else:
-                                os.chdir(res2)
-
-                        elif res2 == 'pasteManager':
-                            shutil.move(og_path, os.getcwd())
-                            break
-
-                else:
-                    os.chdir(res)
-
-
-            elif res == 'exit':  # Exit command to exit from loop
-                sys.exit(0)
-
-            elif res == 'back':  # Back command to go up one directory
-                os.chdir('..')
-
-            elif res == 'cut':
-                og_path = os.getcwd()
-
-                print("Moving the current directory")
-                while True:
-                    for x in range(len(drives)):
-                        print(str(1 + x) + '. ' + drives[x])
-
-                    inp2 = input("\nEnter your Choice: ")
-
-                    if inp2 in drives:
-                        os.chdir(inp2 + '\\')
-                        break
-                    else:
-                        print('Error\nEnter a correct drive name.\n')
-
-                while True:
-                    listDirectories()
-
-                    print('\nType "paste" to paste this folder in current directory')
-
-                    res2 = input('\nChoose a folder to open: ')
-                    print('\n')
-
-                    if res2 in os.listdir(os.getcwd()):
-                        if os.path.isfile(res):
-                            print("You can't choose a file.\nPlease choose a folder.")
-                        else:
-                            os.chdir(res2)
-
-                    elif res2 == 'paste':
-                        shutil.move(og_path, os.getcwd())
-                        break
-
-            else:
-                print('No file/folder exist of this name.')
-
-    if result == '4':
-        print("You chose to copy")
-        print('Drives: ')
-        for x in range(len(drives)):
-            print(str(1 + x) + '. ' + drives[x])
-
-        while True:
-            inp = input("\nEnter your Choice: ")
-
-            if inp in drives:
-                os.chdir(inp + '\\')
-                break
-            else:
-                print('Error\nEnter a correct drive name.\n')
-
-        while True:
-
-            listDirectories()
-
-            print('\n\nType "exit" to exit from file manager.')
-            print('Type "back" to go up one directory.')
-            print('Type "copy" to copy this directory')
-
-            res = input('\nChoose a file to copy: ')
-            print('\n')
-
-            if res in os.listdir(os.getcwd()):
-
-                if os.path.isfile(res):
-                    og_path = os.getcwd() + "\\" + res
-                    print("Move " + res + " to a desired location.")
-
-                    while True:
-                        for x in range(len(drives)):
-                            print(str(1 + x) + '. ' + drives[x])
-
-                        inp2 = input("\nEnter your Choice: ")
-
-                        if inp2 in drives:
-                            os.chdir(inp2 + '\\')
-                            break
-                        else:
-                            print('Error\nEnter a correct drive name.\n')
-
-                    while True:
-                        listDirectories()
-
-                        print('Type "paste" to copy this file in current directory')
-
-                        res2 = input('\nChoose a file to move: ')
-                        print('\n')
-
-                        if res2 in os.listdir(os.getcwd()):
-                            if os.path.isfile(res):
-                                print("You can't choose a file.\nPlease choose a folder.")
-                            else:
-                                os.chdir(res2)
-
-                        elif res2 == 'paste':
-                            shutil.copy(og_path, os.getcwd())
-                            break
-
-                else:
-                    os.chdir(res)
-
-
-            elif res == 'exit':  # Exit command to exit from loop
-                sys.exit(0)
-
-            elif res == 'back':  # Back command to go up one directory
-                os.chdir('..')
-
-            elif res == 'copy':
-                og_path = os.getcwd()
-
-                print("Copying the current directory")
-                while True:
-                    for x in range(len(drives)):
-                        print(str(1 + x) + '. ' + drives[x])
-
-                    inp2 = input("\nEnter your Choice: ")
-
-                    if inp2 in drives:
-                        os.chdir(inp2 + '\\')
-                        break
-                    else:
-                        print('Error\nEnter a correct drive name.\n')
-
-                while True:
-                    listDirectories()
-
-                    print('\nType "paste" to copy this file in current directory')
-
-                    res2 = input('\nChoose a folder to open: ')
-                    print('\n')
-
-                    if res2 in os.listdir(os.getcwd()):
-                        if os.path.isfile(res):
-                            print("You can't choose a file.\nPlease choose a folder.")
-                        else:
-                            os.chdir(res2)
-
-                    elif res2 == 'paste':
-                        print(og_path)
-                        folder_name = og_path.split('\\')[-1]
-                        folder_directory = os.getcwd() + '\\' + folder_name
-                        shutil.copytree(og_path, folder_directory)
-                        break
-
-            else:
-                print('No file/folder exist of this name.')
