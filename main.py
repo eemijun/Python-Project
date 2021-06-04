@@ -70,7 +70,6 @@ def sortList():
     dirlist = os.listdir(os.getcwd())
     dirlist.sort(key=lambda f: os.stat(f).st_size, reverse=True)
     for x in dirlist:
-        print(os.path.getsize(x))
         txt_edit.insert(END, x + " {:.02f} ".format(os.path.getsize(x)) + ' bytes \n')
 
 
@@ -79,7 +78,7 @@ def sizeChange():
     global current_dir
     os.chdir(current_dir)
     dirlist = os.listdir(os.getcwd())
-    dirlist.sort(key=lambda f: os.stat(f).st_size, reverse=True)
+    # dirlist.sort(key=lambda f: os.stat(f).st_size, reverse=True)
     for x in dirlist:
         txt_edit.insert(END, x + " {:.02f} ".format(os.path.getsize(x) / 2 ** 20) + ' MB \n')
 
@@ -129,13 +128,28 @@ def enterDir():
 def backDir():
     txt_edit.delete('1.0', END)
     global current_dir
-    current_dir = current_dir[:current_dir.rfind('\\')]
-    print(current_dir)
-    os.chdir(current_dir)
-    listdir = os.listdir(os.getcwd())
-    for x in listdir:
-        txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
-
+    beg_dir = answer + ":\\"
+    if len(current_dir) <= 4:
+        os.chdir(current_dir)
+        listdir = os.listdir(os.getcwd())
+        for x in listdir:
+            txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
+        return
+    else:
+        try:
+            temp_dir = current_dir[:current_dir.rfind('\\')]
+            print(temp_dir)
+            os.chdir(temp_dir)
+            listdir = os.listdir(os.getcwd())
+            for x in listdir:
+                txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
+        except FileNotFoundError:
+            print("Directory not found")
+            os.chdir(current_dir)
+            listdir = os.listdir(os.getcwd())
+            for x in listdir:
+                txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
+    current_dir = temp_dir
 
 # Stores every drive connected on PC in a list by going thru alphabet looking at each letter
 drives = [chr(x) + ':' for x in range(65, 90) if os.path.exists(chr(x) + ':')]
@@ -195,7 +209,7 @@ input_box = Entry(window, textvariable=dir_var)
 input_box.grid(row=6, column=0, columnspan=2, sticky=E + W, padx=5)
 input_box.focus_set()
 
-ok_but = Button(window, text="OK", command=enterDir)
+ok_but = Button(window, text="OK", command=enterDir, width=10)
 ok_but.grid(row=6, column=3)
 
 window.bind('<Return>', lambda event=None: ok_but.invoke())
