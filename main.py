@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 
 
 def startup_dialog(labeltext):
@@ -121,6 +122,9 @@ def enterDir():
         listdir = os.listdir(os.getcwd())
         for x in listdir:
             txt_edit.insert(END, x + '  ' + str(os.path.getsize(x)) + ' bytes \n')
+        input_box.delete(0, 'end')
+        tk.messagebox.showwarning(title=None, message="Doesn't exist")
+
         return
     current_dir = temp_dir
 
